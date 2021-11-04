@@ -27,4 +27,16 @@ describe('03_separation-of-concerns-demo routes', () => {
         });
       });
   });
+  it('retrieves an order in our database by id', async() => {
+    const res = await request(app)
+      .post('/api/v1/orders')
+      .send({ quantity: 10 });
+
+    const order = res.body; 
+    const retrievedOrder = await request(app)  
+      .get(`/api/v1/orders/${order.id}`);
+      
+    expect(retrievedOrder.body).toEqual(order);
+  });
 });
+
