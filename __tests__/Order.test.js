@@ -20,4 +20,24 @@ describe('03_separation-of-concerns-demo routes', () => {
               
     expect(response).toEqual(expect.arrayContaining([orderOne, orderTwo]));
   });
+  it('retrieves an order by id', async() => {
+    const orderOne = await Order.insert(2);
+    const response = await Order.getById(1);
+              
+    expect(response).toEqual(orderOne);
+  });
+  it('retrieves an order by id and updates it', async() => {
+    await Order.insert(2);
+    await Order.update(1, 5);
+    const response = await Order.getById(1);
+              
+    expect(response).toEqual({ 'id': '1', 'quantity': 5 });
+  });
+  it('creates an order and then deletes it by id', async() => {
+    await Order.insert(2);
+    await Order.delete(1);
+    const response = await Order.getAll();
+              
+    expect(response).toEqual([]);
+  });
 });
