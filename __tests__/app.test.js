@@ -38,5 +38,46 @@ describe('03_separation-of-concerns-demo routes', () => {
       
     expect(retrievedOrder.body).toEqual(order);
   });
+  it('retrieves all orders in our database', async() => {
+    const res = await request(app)
+      .post('/api/v1/orders')
+      .send({ quantity: 10 });
+    const resToo = await request(app)
+      .post('/api/v1/orders')
+      .send({ quantity: 9 });
+    const order = [res.body, resToo.body]; 
+    const retrievedOrder = await request(app)  
+      .get('/api/v1/orders/');
+ 
+    expect(retrievedOrder.body).toEqual(order);
+  });
+  it('retrieves an order in our database by id and updates it', async() => {
+    await request(app)
+      .post('/api/v1/orders')
+      .send({ quantity: 10 });
+   
+    const res = await request(app)
+      .patch('/api/v1/orders/1')
+      .send({ quantity: 5 });
+
+    const order = res.body; 
+    const retrievedOrder = await request(app)  
+      .get('/api/v1/orders/1');
+      
+    expect(retrievedOrder.body).toEqual(order);
+  });
+  it('retrieves an order in our database by id and deletes it', async() => {
+    await request(app)
+      .post('/api/v1/orders')
+      .send({ quantity: 15 });
+   
+    await request(app)
+      .delete('/api/v1/orders/1');
+   
+    const retrievedOrder = await request(app)  
+      .get('/api/v1/orders');
+      
+    expect(retrievedOrder.body).toEqual([]);
+  });
 });
 
